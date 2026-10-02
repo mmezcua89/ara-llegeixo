@@ -107,24 +107,31 @@
 </main>
 
 <script>
+let audioActual = null;
+
 function escolta(lletra, boto) {
 
-  window.speechSynthesis.cancel();
+  // Para cualquier audio que estuviera sonando
+  if (audioActual) {
+    audioActual.pause();
+    audioActual.currentTime = 0;
+  }
 
+  // Quita el resaltado anterior
   document.querySelectorAll('.vocal')
     .forEach(b => b.classList.remove('activa'));
 
+  // Resalta la vocal pulsada
   boto.classList.add('activa');
 
-  const veu = new SpeechSynthesisUtterance(lletra);
-  veu.lang = 'ca-ES';
-  veu.rate = 0.65;
+  // Reproduce nuestra grabación
+  audioActual = new Audio(lletra + '.mp3');
+  audioActual.play();
 
-  window.speechSynthesis.speak(veu);
-
-  setTimeout(() => {
+  // Cuando acaba, vuelve al estado normal
+  audioActual.onended = () => {
     boto.classList.remove('activa');
-  }, 800);
+  };
 }
 </script>
 
